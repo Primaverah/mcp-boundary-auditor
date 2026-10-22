@@ -41,7 +41,9 @@ def test_scan_follows_same_file_helper_call(tmp_path: Path, capsys) -> None:
         encoding="utf-8",
     )
     policy = tmp_path / "policy.yaml"
-    policy.write_text("version: 1\ntools:\n  dangerous:\n    deny: [process.execute]\n", encoding="utf-8")
+    policy.write_text(
+        "version: 1\ntools:\n  dangerous:\n    deny: [process.execute]\n", encoding="utf-8"
+    )
 
     assert main(["scan", str(tmp_path), "--policy", str(policy), "--format", "json"]) == 0
     assert json.loads(capsys.readouterr().out)["findings"][0]["subject"]["name"] == "dangerous"
