@@ -30,5 +30,7 @@ def test_unknown_capability_is_rejected_at_load_time(tmp_path: Path) -> None:
 
 
 def test_omitted_allow_list_does_not_enforce_other_capabilities(tmp_path: Path) -> None:
-    policy = load_policy(_write_policy(tmp_path, "version: 1\ntools:\n  read:\n    deny: [process.execute]\n"))
+    policy = load_policy(
+        _write_policy(tmp_path, "version: 1\ntools:\n  read:\n    deny: [process.execute]\n")
+    )
     assert evaluate_capability(policy, "read", "filesystem.read").status == "not_enforced"

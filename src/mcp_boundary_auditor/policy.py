@@ -1,4 +1,5 @@
 """Explicit, local capability-boundary policy support."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -67,8 +68,7 @@ def _boundaries(path: Path, value: object, label: str) -> dict[str, ToolBoundary
     if not isinstance(value, dict):
         raise PolicyError(f"{path}: {label} must be a mapping")
     return {
-        str(name): _boundary(path, boundary, f"{label}.{name}")
-        for name, boundary in value.items()
+        str(name): _boundary(path, boundary, f"{label}.{name}") for name, boundary in value.items()
     }
 
 

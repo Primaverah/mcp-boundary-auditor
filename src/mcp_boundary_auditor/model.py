@@ -1,8 +1,9 @@
 """Normalized, deterministic data types shared by the scanner."""
+
 from __future__ import annotations
 
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 from typing import Literal
 
 Capability = Literal[
@@ -25,7 +26,9 @@ CAPABILITIES: frozenset[str] = frozenset(
     }
 )
 
-_SECRET_VALUE = re.compile(r"(?i)(?:sk-|gh[pousr]_)[A-Za-z0-9_\-]{8,}|(?i:token|secret|password)=[^\s,;]+")
+_SECRET_VALUE = re.compile(
+    r"(?i)(?:sk-|gh[pousr]_)[A-Za-z0-9_\-]{8,}|(?i:token|secret|password)=[^\s,;]+"
+)
 
 
 def redact_text(value: str) -> str:
@@ -97,7 +100,9 @@ class Finding:
             "subject": {"kind": self.subject_kind, "name": self.subject_name},
             "capability": self.capability,
             "message": redact_text(self.message),
-            "evidence": [item.to_dict() for item in sorted(self.evidence, key=lambda item: item.location)],
+            "evidence": [
+                item.to_dict() for item in sorted(self.evidence, key=lambda item: item.location)
+            ],
             "limitations": list(self.limitations),
             "remediation": self.remediation,
         }

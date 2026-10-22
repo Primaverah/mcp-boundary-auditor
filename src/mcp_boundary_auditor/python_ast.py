@@ -1,4 +1,5 @@
 """Conservative Python AST extraction; never imports target modules."""
+
 from __future__ import annotations
 
 import ast
@@ -56,9 +57,11 @@ def analyze_python(path: str, source: str) -> ModuleAnalysis:
                 unresolved.append(location)
             elif target in _SINKS:
                 sinks.append(Sink(node.name, _SINKS[target], location))
-            elif target in {"getattr", "eval", "exec"} or isinstance(child.func, ast.Name) and child.func.id in {
-                arg.arg for arg in node.args.args
-            }:
+            elif (
+                target in {"getattr", "eval", "exec"}
+                or isinstance(child.func, ast.Name)
+                and child.func.id in {arg.arg for arg in node.args.args}
+            ):
                 unresolved.append(location)
             else:
                 calls.append(CallEdge(node.name, target, location))
@@ -66,7 +69,12 @@ def analyze_python(path: str, source: str) -> ModuleAnalysis:
 
 
 def _is_tool(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
-    return any((_call_name(decorator.func if isinstance(decorator, ast.Call) else decorator) or "").endswith(".tool") for decorator in node.decorator_list)
+    return any(
+        (
+            _call_name(decorator.func if isinstance(decorator, ast.Call) else decorator) or ""
+        ).endswith(".tool")
+        for decorator in node.decorator_list
+    )
 
 
 def _call_name(node: ast.expr) -> str | None:
